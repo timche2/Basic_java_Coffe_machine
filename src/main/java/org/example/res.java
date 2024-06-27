@@ -3,7 +3,6 @@ package org.example;
 public enum res {
     ESPRESSO(0.1, 0.05, 0.1),
     CAPUCHINO(0.15, 0.06,0.15 );
-
     private double water;
     private double coffee;
     private double milk;
