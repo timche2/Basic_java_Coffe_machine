@@ -7,10 +7,19 @@ import java.util.Scanner;
 public class Machine {
 
     final Scanner scaner = new Scanner(System.in);
-    private double coffe_serves = 1;
-    private double milk_serves = 2;
-    private double water_serves = 2;
+    private double coffeServes = 1;
+    private double milkServes = 2;
+    private double waterServes = 2;
     private Map<Integer, String> profiles = new HashMap<>();
+    private String logDrinks = "";
+
+    public void setLogDrinks(String logDrinks) {
+        this.logDrinks = logDrinks + this.logDrinks;
+    }
+
+    public String getLogDrinks() {
+        return logDrinks;
+    }
 
     public Map<Integer, String> getProfiles() {
         return profiles;
@@ -26,26 +35,21 @@ public class Machine {
         return dirtCup;
     }
 
-    public double getCoffee_serves() {
-        return coffe_serves;
+    public double getCoffeeServes() {
+        return coffeServes;
     }
 
-    public double getMilk_serves() {
-        return milk_serves;
+    public double getMilkServes() {
+        return milkServes;
     }
 
-    public double getWater_serves() {
-        return water_serves;
+    public double getWaterServes() {
+        return waterServes;
     }
 
-    //    Menu mn =new Menu();
     public void start() {
         Menu powerOn = new Menu();
         powerOn.switcher(1);
-    }
-
-    public void powerOff() {
-        start();
     }
 
     public int addServes(int value) {
@@ -55,10 +59,10 @@ public class Machine {
             case (1):
                 valueGramUser = scaner.nextLine();
                 valueGram = inputChecked(valueGramUser,0.0,5.0);
-                if (coffe_serves + valueGram <= 5) {
-                    coffe_serves += valueGram;
+                if (coffeServes + valueGram <= 5) {
+                    coffeServes += valueGram;
                     return 1;
-                } else if (coffe_serves >= 5) {
+                } else if (coffeServes >= 5) {
                     return 2;
                 } else {
                     return 3;
@@ -66,10 +70,10 @@ public class Machine {
             case (3):
                 valueGramUser = scaner.nextLine();
                 valueGram = inputChecked(valueGramUser,0.0,5.0);
-                if (water_serves + valueGram <= 5) {
-                    water_serves += valueGram;
+                if (waterServes + valueGram <= 5) {
+                    waterServes += valueGram;
                     return 1;
-                } else if (water_serves >= 5) {
+                } else if (waterServes >= 5) {
                     return 2;
                 } else {
                     return 3;
@@ -77,10 +81,10 @@ public class Machine {
             case (2):
                 valueGramUser = scaner.nextLine();
                 valueGram = inputChecked(valueGramUser,0.0,5.0);
-                if (milk_serves + valueGram <= 5) {
-                    milk_serves += valueGram;
+                if (milkServes + valueGram <= 5) {
+                    milkServes += valueGram;
                     return 1;
-                } else if (milk_serves >= 5) {
+                } else if (milkServes >= 5) {
                     return 2;
                 } else {
                     return 3;
@@ -91,34 +95,33 @@ public class Machine {
         return 0;
     }
 
-    public int makeDrink(int userDrink,int count){
+    public int makeDrink(int userDrink,int count) {
         switch (userDrink) {
             case 1:
-                if (count * getDirtCup() >= 10){
+                if (count + getDirtCup() > 10) {
                     return 4;
                 }
-                if ((coffe_serves - res.CAPUCHINO.getCoffee()*count >= 0) &&
-                        (milk_serves - res.CAPUCHINO.getMilk()*count >= 0) &&
-                        (water_serves - res.CAPUCHINO.getWater()*count) >= 0) {
-                    coffe_serves = coffe_serves - res.CAPUCHINO.getCoffee()*count;
-                    milk_serves = milk_serves - res.CAPUCHINO.getMilk()*count;
-                    water_serves = water_serves - res.CAPUCHINO.getWater()*count;
+                if ((coffeServes - Reserves.CAPUCHINO.getCoffee()*count >= 0) &&
+                        (milkServes - Reserves.CAPUCHINO.getMilk()*count >= 0) &&
+                        (waterServes - Reserves.CAPUCHINO.getWater()*count) >= 0) {
+                    coffeServes = coffeServes - Reserves.CAPUCHINO.getCoffee()*count;
+                    milkServes = milkServes - Reserves.CAPUCHINO.getMilk()*count;
+                    waterServes = waterServes - Reserves.CAPUCHINO.getWater()*count;
                     setDirtCup(getDirtCup() + count);
                     return 1;
                 } else {
                     return 2;
                 }
-
             case 2:
-                if (getDirtCup()==10){
+                if (getDirtCup() + count > 10) {
                     return 4;
                 }
-                if (coffe_serves - res.ESPRESSO.getCoffee() *count >= 0 &&
-                        milk_serves - res.ESPRESSO.getMilk() * count >= 0 &&
-                        water_serves - res.ESPRESSO.getWater()*count >= 0) {
-                    coffe_serves = coffe_serves - res.ESPRESSO.getCoffee()*count;
-                    milk_serves = milk_serves - res.ESPRESSO.getMilk()*count;
-                    water_serves = water_serves - res.ESPRESSO.getWater()*count;
+                if (coffeServes - Reserves.ESPRESSO.getCoffee() *count >= 0 &&
+                        milkServes - Reserves.ESPRESSO.getMilk() * count >= 0 &&
+                        waterServes - Reserves.ESPRESSO.getWater()*count >= 0) {
+                    coffeServes = coffeServes - Reserves.ESPRESSO.getCoffee()*count;
+                    milkServes = milkServes - Reserves.ESPRESSO.getMilk()*count;
+                    waterServes = waterServes - Reserves.ESPRESSO.getWater()*count;
                     setDirtCup(getDirtCup() + count);
                     return 1;
                 } else {
@@ -126,34 +129,35 @@ public class Machine {
                 }
             case 3:
                 return 3;
-
         }
         return 0;
     }
-    public int makeDrink(int cap,int esp,int count){
-                if (count * getDirtCup() >= 10){
+
+    public int makeDrink(int cap,int esp,int count) {
+                if (count + getDirtCup() > 10) {
                     return 4;
                 }
-                if ((coffe_serves - res.CAPUCHINO.getCoffee()*count >= 0) &&
-                        (milk_serves - res.CAPUCHINO.getMilk()*count >= 0) &&
-                        (water_serves - res.CAPUCHINO.getWater()*count) >= 0 &&
-                        coffe_serves - res.ESPRESSO.getCoffee() *count >= 0 &&
-                        milk_serves - res.ESPRESSO.getMilk() * count >= 0 &&
-                        water_serves - res.ESPRESSO.getWater()*count >= 0) {
+                if ((coffeServes - Reserves.CAPUCHINO.getCoffee()*count >= 0) &&
+                        (milkServes - Reserves.CAPUCHINO.getMilk()*count >= 0) &&
+                        (waterServes - Reserves.CAPUCHINO.getWater()*count) >= 0 &&
+                        coffeServes - Reserves.ESPRESSO.getCoffee() *count >= 0 &&
+                        milkServes - Reserves.ESPRESSO.getMilk() * count >= 0 &&
+                        waterServes - Reserves.ESPRESSO.getWater()*count >= 0) {
 
-                    coffe_serves = coffe_serves - res.CAPUCHINO.getCoffee()*count;
-                    milk_serves = milk_serves - res.CAPUCHINO.getMilk()*count;
-                    water_serves = water_serves - res.CAPUCHINO.getWater()*count;
+                    coffeServes = coffeServes - Reserves.CAPUCHINO.getCoffee()*count;
+                    milkServes = milkServes - Reserves.CAPUCHINO.getMilk()*count;
+                    waterServes = waterServes - Reserves.CAPUCHINO.getWater()*count;
 
-                    coffe_serves = coffe_serves - res.ESPRESSO.getCoffee()*count;
-                    milk_serves = milk_serves - res.ESPRESSO.getMilk()*count;
-                    water_serves = water_serves - res.ESPRESSO.getWater()*count;
+                    coffeServes = coffeServes - Reserves.ESPRESSO.getCoffee()*count;
+                    milkServes = milkServes - Reserves.ESPRESSO.getMilk()*count;
+                    waterServes = waterServes - Reserves.ESPRESSO.getWater()*count;
                     setDirtCup(getDirtCup() + count);
                     return 1;
                 } else {
                     return 2;
                 }
     }
+
     public int howManyCups(int choiceNumber) {
         switch (choiceNumber) {
             case 1:
@@ -169,28 +173,24 @@ public class Machine {
         return 0;
     }
 
-    public int createProfile (int cup,int esp,int espValue,int cupValue,String userName){
-        if (cupValue == 10){
+    public int createProfile(int cup,int esp,int espValue,int cupValue,String userName) {
+        if (cupValue == 10) {
             cupValue = 0;
         }
-        if (espValue == 10){
+        if (espValue == 10) {
             espValue = 0;
         }
         int keyProfile = (10000 + cupValue * 1000 + cup * 100 + espValue * 10 + esp);
         profiles.put(keyProfile, userName);
         return keyProfile;
     }
-    public int choiceProfile(){
-
-        return 1;
-    }
 
     public int cleaningCheck() {
-        if (dirtCup == 0){
+        if (dirtCup == 0) {
             return 1;
         }else if(dirtCup > 0 && dirtCup < 10) {
             return 2;
-        }else if(dirtCup == 10){
+        }else if(dirtCup == 10) {
             return 3;
         }
         return 0;
@@ -199,46 +199,60 @@ public class Machine {
         dirtCup=0;
     }
 
-    public int inputChecked(String userChoice, int minValue,int maxValue){
+    public int inputChecked(String userChoice, int minValue,int maxValue) {
         while (true) {
             try {
-                if (userChoice.equals("")){
+                if (userChoice.equals("")) {
                     userChoice=scaner.nextLine();
                     continue;
                 }
                 int userChoiceInt = Integer.parseInt(userChoice);
-                if(userChoiceInt < minValue || userChoiceInt > maxValue){
-                    System.out.println("Incorrect input!Try again!\n"+
-                            "You can enter numbers from " +minValue+" to "+maxValue);
+                if (userChoiceInt < minValue || userChoiceInt > maxValue) {
+                    System.out.println("Incorrect input!Try again!\n" +
+                            "You can enter numbers from " + minValue +" to "+ maxValue);
                 } else {
                     return userChoiceInt;
                 }
             } catch (NumberFormatException ex) {
-                System.out.println("Incorrect input!Try again!\n"+
-                        "You can enter numbers from " +minValue+" to "+maxValue);
+                System.out.println("Incorrect input!Try again!\n" +
+                        "You can enter numbers from " + minValue + " to " + maxValue);
             }
             userChoice=scaner.nextLine();
         }
     }
-    public Double inputChecked(String userChoice, Double minValue, Double maxValue){
+
+    public Double inputChecked(String userChoice, Double minValue, Double maxValue) {
         while (true) {
-            if (userChoice.equals("")){
+            if (userChoice.equals("")) {
                 userChoice=scaner.nextLine();
                 continue;
             }
             try {
                 double userChoiceInt = Double.parseDouble(userChoice);
-                if(userChoiceInt < minValue || userChoiceInt > maxValue){
-                    System.out.println("Incorrect input!Try again!\n"+
-                            "You can enter numbers from " +minValue+" to "+maxValue);
+                if(userChoiceInt < minValue || userChoiceInt > maxValue) {
+                    System.out.println("Incorrect input!Try again!\n" +
+                            "You can enter numbers from " + minValue + " to " + maxValue);
                 }else {
                     return userChoiceInt;
                 }
             } catch (NumberFormatException ex) {
                 System.out.println("Incorrect input!Try again!\n"+
-                        "You can enter numbers from " +minValue+" to "+maxValue);
+                        "You can enter numbers from " + minValue + " to " + maxValue);
             }
             userChoice=scaner.nextLine();
+        }
+    }
+
+    public String inputChecked(String nameDrink) {
+        while (true) {
+            try {
+                Reserves.valueOf(nameDrink);
+                return nameDrink;
+            } catch (java.lang.IllegalArgumentException value) {
+                System.out.println("There is no such recipe!\n" +
+                        "Try again!");
+            }
+            nameDrink = scaner.nextLine();
         }
     }
 }

@@ -2,7 +2,6 @@ package org.example;
 
 import java.util.Scanner;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Menu {
@@ -11,8 +10,7 @@ public class Menu {
     private int userChoice;
     private final Machine machine = new Machine();
 
-
-    public void switcher(int userChoice){
+    public void switcher(int userChoice) {
         while (true) {
             switch (userChoice) {
                 case (1):
@@ -25,7 +23,7 @@ public class Menu {
                     userChoice = addServesmenu();
                     continue;
                 case (4):
-                    userChoice = viewServesmenu();
+                    userChoice = viewServesMenu();
                     continue;
                 case (5):
                     userChoice = makeDrinkMenu();
@@ -39,6 +37,12 @@ public class Menu {
                 case 8:
                     userChoice = choiceProfileMenu();
                     continue;
+                case 9:
+                    userChoice = viewLogsMenu();
+                    continue;
+                case 10:
+                    userChoice = viewRecipesMenu();
+                    continue;
             }
             break;
         }
@@ -48,23 +52,23 @@ public class Menu {
         System.out.println("Hello!What are you want?\n" +
                 "1.Power On\n" +
                 "2.Power Off\n" +
-                "3.Add Serves\n"+
-                "4.View Serves\n"+
-                "5.Make a Drink\n"+
-                "6.Cleaning\n"+
-                "7.Create profile\n"+
-                "8.Speed dial by profile");
+                "3.Add Serves\n" +
+                "4.View Serves\n" +
+                "5.Make a Drink\n" +
+                "6.Cleaning\n" +
+                "7.Create profile\n" +
+                "8.Speed dial by profile\n" +
+                "9.View the log\n" +
+                "10.View recipes of drinks");
         String userChoice = scaner.nextLine();
-        return (machine.inputChecked(userChoice,1,8));
-
+        return (machine.inputChecked(userChoice,1,10));
     }
 
-    public int viewServesmenu(){
+    public int viewServesMenu() {
         System.out.println("Serwes:\n" +
-                "Coffee: " + machine.getCoffee_serves() + "kg " + "/ 5kg\n" +
-                "Milk: " + machine.getMilk_serves() + "l " + "/ 5l\n" +
-                "Water: " + machine.getWater_serves() + "l " + "/ 5l\n\n");
-
+                "Coffee: " + machine.getCoffeeServes() + "kg " + "/ 5kg\n" +
+                "Milk: " + machine.getMilkServes() + "l " + "/ 5l\n" +
+                "Water: " + machine.getWaterServes() + "l " + "/ 5l\n\n");
         return 1;
     }
 
@@ -75,7 +79,6 @@ public class Menu {
                     "2.Milk\n" +
                     "3.Water\n" +
                     "4.Back to main menu");
-
             String userChoiceInput = scaner.nextLine();
             userChoice = machine.inputChecked(userChoiceInput,1,4);
             if (userChoice == 4) {
@@ -102,22 +105,29 @@ public class Menu {
     public int makeDrinkMenu() {
         while (true) {
             System.out.println("Which is drnk?\n" +
-                    "1." + res.CAPUCHINO + "\n" +
-                    "2." + res.ESPRESSO + "\n" +
+                    "1." + Reserves.CAPUCHINO + "\n" +
+                    "2." + Reserves.ESPRESSO + "\n" +
                     "3.Back to main menu");
+            String kindCoffee = "";
             String choiceDrinkInput = scaner.nextLine();
             int choiceDrink = machine.inputChecked(choiceDrinkInput,1,3);
-            String kindCoffee = "";
-            switch (choiceDrink){
+
+            switch (choiceDrink) {
                 case 3:
                     return (1);
                 case 2:
                     kindCoffee = "ESPRESSO";
+                    break;
                 case 1:
                     kindCoffee = "CAPUCHINO";
+                    break;
             }
             int count = howManyCupsMenu();
-            if (count==-1){
+            if (count == 0){
+                System.out.println("You have chosen zero cups!\n");
+                continue;
+            }
+            if (count == -1) {
                 continue;
             }
             int choiceDrinkReturn=machine.makeDrink(choiceDrink,count);
@@ -125,6 +135,7 @@ public class Menu {
                 case 1:
                     System.out.println("Thank you!\n"+
                             "Take your " + count + " cup(s) of " + kindCoffee);
+                            machine.setLogDrinks(count + " cup(s) of " + kindCoffee + "\n");
                     break;
                 case 2:
                     System.out.println("Insufficient resources!\n");
@@ -138,33 +149,33 @@ public class Menu {
 
     public int cleaningMenu() {
         System.out.println("Dirty cups: " + machine.getDirtCup() + "/10");
-        switch (machine.cleaningCheck()){
+        switch (machine.cleaningCheck()) {
             case 1:
                 System.out.println("Machine is clean\n");
                 break;
             case 2:
-                System.out.println("Some cups are dirty.Are you want to clean machine?\n"+
-                        "1.Yes\n"+
+                System.out.println("Some cups are dirty.Are you want to clean machine?\n" +
+                        "1.Yes\n" +
                         "2.No\n");
                 String valueInput = scaner.nextLine();
                 int value = machine.inputChecked(valueInput,1,2);
-                if (value==1){
+                if (value == 1) {
                     machine.cleaninig();
                     System.out.println("All cups are clean\n");
-                }else if(value==2) {
+                } else if (value == 2) {
                     System.out.println("Okay\n");
                 }
                 break;
             case 3:
-                System.out.println("All cups are dirty.Are you want to clean machine?\n"+
-                        "1.Yes\n"+
+                System.out.println("All cups are dirty.Are you want to clean machine?\n" +
+                        "1.Yes\n" +
                         "2.No\n");
                 valueInput = scaner.nextLine();
                 value = machine.inputChecked(valueInput,1,2);
-                if(value==1){
+                if (value == 1) {
                     System.out.println("All cups are clean\n");
                     machine.cleaninig();
-                }else if(value==2) {
+                } else if (value == 2) {
                     System.out.println("Okay\n");
                 }
                 break;
@@ -173,7 +184,7 @@ public class Menu {
     }
 
     public int howManyCupsMenu() {
-        System.out.println("How many cups are you want?\n"+
+        System.out.println("How many cups are you want?\n" +
                 "1.One cup\n" +
                 "2.Three cups\n" +
                 "3.Enter a number\n"+
@@ -186,7 +197,7 @@ public class Menu {
         return machine.howManyCups(choiceNumber);
     }
 
-    public int createProfileMenu(){
+    public int createProfileMenu() {
         System.out.println("What is your name?");
         String nameUser = scaner.nextLine();
         int cap = 0;
@@ -196,9 +207,9 @@ public class Menu {
         while (true) {
             System.out.println("Hello, " + nameUser + "!\n" +
                     "What is drink you want to add in your profile?\n" +
-                    "1." + res.CAPUCHINO + "\n" +
-                    "2." + res.ESPRESSO + "\n" +
-                    "3.Save\n"+
+                    "1." + Reserves.CAPUCHINO + "\n" +
+                    "2." + Reserves.ESPRESSO + "\n" +
+                    "3.Save\n" +
                     "4.Back to main menu");
             String choiceNumberInput = scaner.nextLine();
             int choiceNumber = machine.inputChecked(choiceNumberInput, 1, 4);
@@ -210,12 +221,20 @@ public class Menu {
                     System.out.println("How much cups?(Enter a number)");
                     String choiceCapValue = scaner.nextLine();
                     capValue = machine.inputChecked(choiceCapValue, 1, 10);
+                    if (espValue + capValue > 10) {
+                        System.out.println("Too many cups!");
+                        capValue = 0;
+                    }
                     break;
                 case 2:
                     esp = 2;
                     System.out.println("How much cups?(Enter a number)");
                     String choiceEspValue = scaner.nextLine();
                     espValue = machine.inputChecked(choiceEspValue, 1, 10);
+                    if (capValue + espValue > 10) {
+                        System.out.println("Too many cups!");
+                        espValue = 0;
+                    }
                     break;
             }
             if (choiceNumber == 3){
@@ -224,47 +243,53 @@ public class Menu {
         }
         int keyUser = machine.createProfile(cap,esp,espValue,capValue,nameUser);
         System.out.println("Profile created!\n" +
-                "Name: " + nameUser + "\n"+
+                "Name: " + nameUser + "\n" +
                 "The key for speed dial: " + keyUser);
         return 1;
     }
 
-    public int choiceProfileMenu () {
+    public int choiceProfileMenu() {
         Map<Integer, String> profiles = machine.getProfiles() ;
-        if (profiles.size() == 0){
+        if (profiles.size() == 0) {
             System.out.print("There are no profiles\n" +
                     "You can create them from the main menu\n");
             return 1;
         }
         System.out.print("Find your profile and enter the code:\n");
-        for(Map.Entry<Integer, String> entry: profiles.entrySet()) {
+        for (Map.Entry<Integer, String> entry: profiles.entrySet()) {
             System.out.print(entry.getValue() + " ");
             System.out.println(entry.getKey());
         }
-        System.out.print("10000.Back to main menu\n");
+        System.out.print("Print 10000 if you want back to main menu\n");
         String profileKeyInput = scaner.nextLine();
         int profileKey = machine.inputChecked(profileKeyInput, 10000, 19192);
-        if (profileKey == 10000){
+        if (profileKey == 10000) {
             return 1;
         }
         for(Map.Entry<Integer, String> entry: profiles.entrySet()) {
             Integer key = entry.getKey();
             String nameUser = entry.getValue();
-            if (profileKey == key){
+            if (profileKey == key) {
                 fastDialMenu((profileKey / 1000) % 10,(profileKey / 100) % 10,
                         (profileKey / 10) % 10,profileKey % 10,nameUser);
                 return 1;
             }
         }
+        System.out.print("Profile not found!\n");
         return 1;
     }
-    public int fastDialMenu(int cupCount,int cup, int espCount,int esp,String userName){
-        int choiceDrinkReturn=0;
-        if(cup+esp == 3) {
-            choiceDrinkReturn = machine.makeDrink(cup,esp ,cupCount);
+
+    public int fastDialMenu (int cupCount,int cup, int espCount,int esp,String userName) {
+        int choiceDrinkReturn = 0;
+        if (cup+esp == 3) {
+            choiceDrinkReturn = machine.makeDrink(cup,esp ,cupCount+espCount);
+
             switch (choiceDrinkReturn) {
                 case 1:
-                    System.out.println("Take your " + cupCount + " cup(s) of " + res.CAPUCHINO);
+                    System.out.println("Take your " + cupCount + " cup(s) of " + Reserves.CAPUCHINO);
+                    System.out.println("Take your " + espCount + " cup(s) of " + Reserves.ESPRESSO);
+                    machine.setLogDrinks(espCount + " cup(s) of " + Reserves.ESPRESSO + "\n");
+                    machine.setLogDrinks(cupCount + " cup(s) of " + Reserves.CAPUCHINO + "\n");
                     break;
                 case 2:
                     System.out.println("Insufficient resources!\n");
@@ -276,16 +301,12 @@ public class Menu {
             return 1;
         }
 
-
-
-
-
-
-        if(cup != 0 ) {
+        if (cup != 0 ) {
             choiceDrinkReturn = machine.makeDrink(cup, cupCount);
             switch (choiceDrinkReturn) {
                 case 1:
-                    System.out.println("Take your " + cupCount + " cup(s) of " + res.CAPUCHINO);
+                    System.out.println("Take your " + cupCount + " cup(s) of " + Reserves.CAPUCHINO);
+                    machine.setLogDrinks(cupCount + " cup(s) of " + Reserves.CAPUCHINO + "\n");
                     break;
                 case 2:
                     System.out.println("Insufficient resources!\n");
@@ -295,11 +316,13 @@ public class Menu {
                     break;
             }
         }
-        if (esp != 0 && (choiceDrinkReturn != 2) && choiceDrinkReturn != 4){
+
+        if (esp != 0 ) {
             choiceDrinkReturn = machine.makeDrink(esp, espCount);
             switch (choiceDrinkReturn) {
                 case 1:
-                    System.out.println("Take your " + espCount + " cup(s) of " + res.ESPRESSO);
+                    System.out.println("Take your " + espCount + " cup(s) of " + Reserves.ESPRESSO);
+                    machine.setLogDrinks(espCount + " cup(s) of " + Reserves.ESPRESSO + "\n");
                     break;
                 case 2:
                     System.out.println("Insufficient resources!\n");
@@ -309,9 +332,48 @@ public class Menu {
                     break;
             }
         }
-
         return 1;
     }
 
+    public int viewLogsMenu() {
+        if (machine.getLogDrinks() == "") {
+            System.out.println("The ready-made drinks log is empty");
+            return 1;
+        } else {
+            System.out.println("List of prepared drinks:\n" +
+                    machine.getLogDrinks());
+            return 1;
+        }
+    }
+
+    public int viewRecipesMenu() {
+        while (true) {
+            System.out.println("What is recipe you want?\n" +
+                    "1." + Reserves.ESPRESSO + "\n" +
+                    "2." + Reserves.CAPUCHINO + "\n" +
+                    "3.Back to main menu");
+
+            String nameDrinkInput = scaner.nextLine();
+            int choiceNameDrink = machine.inputChecked(nameDrinkInput, 1, 3);
+            switch (choiceNameDrink) {
+                case  1:
+                    String nameDrink = "ESPRESSO";
+                    System.out.println(Reserves.valueOf(nameDrink) + ":\n" +
+                        "Coffee:" + Reserves.valueOf(nameDrink).getCoffee() + "\n" +
+                        "Milk:" + Reserves.valueOf(nameDrink).getMilk() + "\n" +
+                        "Water:" + Reserves.valueOf(nameDrink).getWater() + "\n");
+                    continue;
+                case 2:
+                    nameDrink = "CAPUCHINO";
+                    System.out.println(Reserves.valueOf(nameDrink) + ":\n" +
+                            "Coffee:" + Reserves.valueOf(nameDrink).getCoffee() + "\n" +
+                            "Milk:" + Reserves.valueOf(nameDrink).getMilk() + "\n" +
+                            "Water:" + Reserves.valueOf(nameDrink).getWater() + "\n");
+                    continue;
+                case 3:
+                    return 1;
+            }
+        }
+    }
 
 }
