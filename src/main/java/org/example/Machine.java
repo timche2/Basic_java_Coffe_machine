@@ -249,7 +249,7 @@ public class Machine {
                 Reserves.valueOf(nameDrink);
                 return nameDrink;
             } catch (java.lang.IllegalArgumentException value) {
-                System.out.println("There is no such recipe!\n" +
+                System.out.println("There is no such recipe.\n" +
                         "Try again!");
             }
             nameDrink = scaner.nextLine();
